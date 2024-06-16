@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue';
 
-interface Todo {
+interface TodoItem {
   id: number;
   text: string;
   completed: boolean;
@@ -13,7 +13,7 @@ const currentFilter = ref<'all' | 'active' | 'done'>('all');
 const filterTodos = (filterType: 'all' | 'active' | 'done') => {
   currentFilter.value = filterType;
 }
-const todos = ref<Todo[]>([
+const todos = ref<TodoItem[]>([
   { id: 1, text: 'Buy groceries', completed: false },
   { id: 2, text: 'Walk the dog', completed: true },
   { id: 3, text: 'Read a book', completed: false },
@@ -42,7 +42,7 @@ const deleteTodo = (todoId: number):void => {
   todos.value = todos.value.filter(item => item.id !== todoId);
 }
 
-const changeStatus = (todoItem: Todo): void => {
+const changeStatus = (todoItem: TodoItem): void => {
   todoItem.completed = !todoItem.completed;
 }
 
@@ -54,7 +54,7 @@ const activeTodos = computed(() => {
   return todos.value.filter(task => !task.completed);
 });
 
-const filteredTasks = computed(() => {
+const filteredTodos = computed(() => {
   if (currentFilter.value === 'active') {
     return activeTodos.value;
   } else if (currentFilter.value === 'done') {
@@ -70,7 +70,7 @@ const filteredTasks = computed(() => {
   <section class="todo__section">
     <div class="container">
 
-      <h1 class="title">To-Do List</h1>
+      <h1 class="title">Todos List</h1>
 
       <ul class="todo__nav">
         <li>
@@ -115,8 +115,8 @@ const filteredTasks = computed(() => {
         </button>
       </form>
 
-      <ul class="todo__container" v-if="todos.length">
-        <li class="todo__item" v-for="todo in filteredTasks" :key="todo.id">
+      <ul class="todo__container" v-if="filteredTodos.length">
+        <li class="todo__item" v-for="todo in filteredTodos" :key="todo.id">
           <button 
             class="todo__item-status" 
             :class="{ 'completed': todo.completed }"
@@ -127,7 +127,6 @@ const filteredTasks = computed(() => {
             class="todo__item-text" 
             :class="{ 'completed': todo.completed }"
           >
-            {{ todo.id }}
             {{ todo.text }}
           </p>
           <button 
